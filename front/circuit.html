@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Circuit</title>
+	<link rel="stylesheet" href="css/bootstrap-slate.css" />
+	<link rel="stylesheet" href="font-awesome-4.7.0/css/font-awesome.min.css" />
+</head>
+
+<body>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Endurance 24s <small>Circuit designer</small></h1>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="container" id="main">
+		<div class="row">
+			<div class="col-md-12">
+				<canvas id="circuit" width="800" height="460" style="border:solid 1px white;"></canvas>
+				<canvas id="preview" width="800" height="460" style="border:solid 1px white;"></canvas>
+				<svg id="preview" width="800" height="460" xmlns="http://www.w3c.org.200/svg" style="border:solid 1px white;">
+					<circle id="circle1" cx="25" cy="75" r="5" stroke="#00ff00" fill="#fff" stroke-width="2" style="opacity: 0.8;" />
+				</svg>
+			</div>
+		</div>
+	</div>
+
+	<hr/>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<h2>Save</h2>
+				<a class="btn btn-primary" href="#">
+					<i class="fa fa-save fa-lg"></i> Save</a>
+				<a class="btn btn-default btn-sm" href="#">
+					<i class="fa fa-refresh"></i> Reset</a>
+			</div>
+		</div>
+
+	</div>
+
+	<noscript>Scripting turned off...</noscript>
+
+	<script src="js/libs/jquery-2.1.4.js"></script>
+	<script src="js/libs/rx.all-4.0.6.js"></script>
+
+	<script type="text/javascript">
+		var scale = 2;
+		var circuitWidth = 900 / scale, circuitHeight = 450 / scale;
+
+		var points = [];
+
+		var canvas = document.querySelector("canvas#circuit");
+		var canvasContext = canvas.getContext("2d");
+
+		var clickEvent$ = Rx.Observable.fromEvent($('canvas#circuit'), 'click');
+
+		$(document).ready(function () {
+			// circuit
+			$('#circuit, #preview').attr('width', circuitWidth);
+			$('#circuit, #preview').attr('height', circuitHeight);
+
+			var pointClick$ = clickEvent$.map(function (e) {
+				return {
+					'x': e.offsetX,
+					'y': e.offsetY
+				}
+			}).startWith({ 'x': circuitWidth / 2, 'y': circuitHeight / 10 });
+
+			pointClick$.subscribe(function (p) {
+				points[points.length] = p;
+				var context = document.querySelector("canvas#preview").getContext("2d");
+				context.clearRect(0, 0, canvas.width, canvas.height);
+				context.translate(0.0,0.0);
+
+
+				context.lineWidth = 60 / scale;
+				context.strokeStyle = "#ccc";
+				context.beginPath();
+				context.moveTo(points[0].x, points[0].y);
+				var pointIndex;
+				for(pointIndex = 0 ;  pointIndex < points.length ; pointIndex++){
+					
+					context.lineTo(points[pointIndex].x, points[pointIndex].y);
+				}
+				context.closePath();
+				context.lineJoin = 'round';
+				context.stroke();
+				
+			});
+
+			pointClick$.subscribe(function (point) {
+
+				canvasContext.lineTo(point.x, point.y);
+				canvasContext.lineWidth = 9 / scale;
+				canvasContext.strokeStyle = "#ccc";
+				canvasContext.stroke();
+
+				canvasContext.moveTo(point.x, point.y);
+
+				canvasContext.beginPath()
+				canvasContext.arc(point.x, point.y, 9 / scale, 0, 2 * Math.PI, false);
+				canvasContext.fillStyle = '#ccc';
+				canvasContext.fill();
+				canvasContext.strokeStyle = "#ccc";
+				canvasContext.stroke();
+
+				canvasContext.moveTo(point.x, point.y);
+			});
+
+
+			Rx.Observable.fromEvent($('canvas#preview'), 'mousemove').subscribe(function(e){
+				
+				var x, y;
+				x = e.offsetX;
+				y = e.offsetY;
+				
+				$('#circle1').attr('cy', y);
+				$('#circle1').attr('cx', x);
+
+				var context = e.target.getContext("2d");
+				var inpath = context.isPointInStroke(x, y);
+
+				$('#circle1').attr('stroke', inpath ? '#00ff00' : '#ff0000');
+				//  stroke="#00ff00" 
+				
+				// console.log(inpath);
+
+				// console.log(e.offsetY);
+			});
+					// console.log(ctx.isPointInStroke(10, 10)); // true
+
+
+		});
+
+		// var speed = 5;
+		// var speedval = 1;
+		// Rx.Observable.interval(50).take(20).subscribe(function (v) {
+
+		// 	speed++;
+		// 	console.log("speed: " + speed);
+
+		// 	$('#circle1').attr('cx', v * speed);
+		// 	$('#circle1').attr('cy', v);
+		// });
+
+// 		but you could do something like
+
+// var context = document.getElementById('myCanvas').getContext('2d');
+// context.beginPath();
+// context.moveTo(p0.x, p0.y);
+// context.quadraticCurveTo(p1.x, p1.y, (p1.x+p2.x)/2, (p1.y+p2.y)/2);
+// context.quadraticCurveTo(p2.x, p2.y, p3.x, p3.y);
+// context.strokeStyle = 'black';
+// context.stroke();
+
+// or if you'd rather use 2 beziers stuck together :
+
+// var context = document.getElementById('myCanvas').getContext('2d');
+// context.beginPath();
+// context.moveTo(p0.x, p0.y);
+// context.bezierCurveTo(p1.x, p1.y, p1.x, p1.y, (p1.x+p2.x)/2, (p1.y+p2.y)/2);
+// context.bezierCurveTo(p2.x, p2.y, p2.x, p2.y, p3.x, p3.y);
+// context.strokeStyle = 'black';
+// context.stroke();
+	</script>
+</body>
+
+</html>

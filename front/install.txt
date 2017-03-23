@@ -1,0 +1,19 @@
+curl https://bootswatch.com/slate/bootstrap.css > bootstrap-slate.css
+curl https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css > font-awesome.min.css
+
+
+curl https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js > jquery-2.1.4.js
+
+	
+curl https://cdnjs.cloudflare.com/ajax/libs/rxjs/4.0.6/rx.all.js > rx.all-4.0.6.js
+
+curl https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js > cryptojs.core-3.1.2.js
+curl https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/sha256.js > cryptojs.sha256-3.1.2.js
+
+curl https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/md5-min.js > cryptojs.md5-3.1.2.js
+
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.3/handlebars.js"></script>
+    
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/sha256.js"></script>
