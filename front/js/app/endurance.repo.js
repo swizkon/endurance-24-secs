@@ -1,7 +1,8 @@
-var AutoScout = window['AutoScout'] || {};
+var endurance = window['endurance'] || {};
 
 
-AutoScout.List = function(name) {
+endurance.repo = function(name) {
+
     var list = {
         title: name,
         timestamp: new Date().getTime(),
@@ -15,7 +16,6 @@ AutoScout.List = function(name) {
     list.addItem = function(name) {
         this.items[this.items.length] = {name: name, quant: 1};
     };
-
-
+    
     return list;
 };
