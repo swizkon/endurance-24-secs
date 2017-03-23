@@ -71,16 +71,28 @@
 					'x': e.offsetX,
 					'y': e.offsetY
 				}
-			}).startWith({ 'x': circuitWidth / 2, 'y': circuitHeight / 10 });
+			}).startWith({ 'x': circuitWidth / 2, 'y': 20 });
 
 			pointClick$.subscribe(function (p) {
 				points[points.length] = p;
 				var context = document.querySelector("canvas#preview").getContext("2d");
 				context.clearRect(0, 0, canvas.width, canvas.height);
 				context.translate(0.0,0.0);
-
-
+				
 				context.lineWidth = 60 / scale;
+				context.strokeStyle = "#999";
+				context.beginPath();
+				context.moveTo(points[0].x, points[0].y);
+				var pointIndex;
+				for(pointIndex = 0 ;  pointIndex < points.length ; pointIndex++){
+					
+					context.lineTo(points[pointIndex].x, points[pointIndex].y);
+				}
+				context.closePath();
+				context.lineJoin = 'round';
+				context.stroke();
+
+				context.lineWidth = 40 / scale;
 				context.strokeStyle = "#ccc";
 				context.beginPath();
 				context.moveTo(points[0].x, points[0].y);
