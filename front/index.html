@@ -9,7 +9,7 @@
 
 <div class="container">
     <div class="col-md-6 col-md-offset-3">
-		<h1>Endurance 24s <small>designer</small></h1>
+		<h1>Endurance 24 secs <small>designer</small></h1>
     </div>
 </div>
     
@@ -83,7 +83,7 @@
 		database.ref('circuits').on('child_added', function (data) {
 			console.log("circuits child_added...");
 			console.log(data.val());
-			var chld = $('<div><b>' + data.val().circuitName + '</b> (click to accept)</div>').attr('id', 'circuit-' + data.val().transactionid).attr('data-txid', data.val().transactionid);
+			var chld = $('<div><b>' + data.val().circuitName + '</b> (click to preview)</div>').attr('id', 'circuit-' + data.val().transactionid).attr('data-txid', data.val().transactionid);
 			chld.click(acceptOrder);
 			chld.prependTo('#circuits');
 		});
