@@ -20,9 +20,10 @@
 	<div class="container" id="main">
 		<div class="row">
 			<div class="col-md-12">
-				<canvas id="circuit" width="800" height="460" style="border:solid 1px white;"></canvas>
-				<canvas id="preview" width="800" height="460" style="border:solid 1px white;"></canvas>
-				<svg id="preview" width="800" height="460" xmlns="http://www.w3c.org.200/svg" style="border:solid 1px white;">
+				<canvas id="circuit" width="900" height="450" style="border:solid 1px white;"></canvas>
+				<canvas id="preview" width="900" height="450" style="border:solid 1px white;"></canvas>
+				<canvas id="map" width="900" height="450" style="border:solid 1px white;"></canvas>
+				<svg id="preview" width="900" height="450" xmlns="http://www.w3c.org.200/svg" style="border:solid 1px white;">
 					<circle id="circle1" cx="25" cy="75" r="5" stroke="#00ff00" fill="#fff" stroke-width="2" style="opacity: 0.8;" />
 				</svg>
 			</div>
@@ -50,7 +51,7 @@
 	<script src="js/libs/rx.all-4.0.6.js"></script>
 
 	<script type="text/javascript">
-		var scale = 2;
+		var scale = 5;
 		var circuitWidth = 900 / scale, circuitHeight = 450 / scale;
 
 		var points = [];
@@ -139,15 +140,7 @@
 				var inpath = context.isPointInStroke(x, y);
 
 				$('#circle1').attr('stroke', inpath ? '#00ff00' : '#ff0000');
-				//  stroke="#00ff00" 
-				
-				// console.log(inpath);
-
-				// console.log(e.offsetY);
 			});
-					// console.log(ctx.isPointInStroke(10, 10)); // true
-
-
 		});
 
 	</script>
