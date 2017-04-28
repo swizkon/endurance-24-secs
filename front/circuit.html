@@ -144,46 +144,32 @@
 				canvasContext.moveTo(point.x, point.y);
 			});
 
-
 			pointClick$.subscribe(function (p) {
 				var context = document.querySelector("canvas#plotter").getContext("2d");
 				context.clearRect(0, 0, canvas.width * scale, canvas.height * scale);
 				context.translate(0.0, 0.0);
 
-				var ontrack = 0;
-				var plotter = [];
 				var radius = 1;
-				var x, y;
-				for (x = 0; x < circuitWidth; x += 1) {
-					for (y = 0; y < circuitHeight; y += 1) {
 
-						var inpath = previewCanvasContext.isPointInStroke(x, y);
-						var fillColor = inpath ? '#00ff00' : '#cc0000';
-						ontrack += inpath ? 1 : 0;
+				var pointsOfInterest = endurance.designer.pointsOfInterest(previewCanvas);
 
-						if (inpath) {
-							plotter[plotter.length] = x;
-							plotter[plotter.length] = y;
-						}
-						var isOfInterest = endurance.designer.isPointOfInterest(previewCanvasContext, x, y);
-						if (isOfInterest) {
-
+				context.fillStyle = '#cc0000';
+				$.each(pointsOfInterest["off"], function(index, point){
 							context.beginPath();
-							context.arc(x * scale, y * scale, radius, 0, 2 * Math.PI, false);
-							context.fillStyle = fillColor;
+							context.arc(point.x * scale, point.y * scale, radius, 0, 2 * Math.PI, false);
 							context.fill();
-						}
-					}
-				}
-				console.log(ontrack);
-				console.log(plotter);
+				});
 
+				context.fillStyle = '#00ff00';
+				$.each(pointsOfInterest["on"], function(index, point){
+							context.beginPath();
+							context.arc(point.x * scale, point.y * scale, radius, 0, 2 * Math.PI, false);
+							context.fill();
+				});
+				
+				console.log(pointsOfInterest);
+				console.log(points);
 			});
-
-
-
-
-
 
 
 			Rx.Observable.fromEvent($('canvas#preview'), 'mousemove').subscribe(function (e) {
