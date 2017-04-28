@@ -22,10 +22,10 @@
 			<div class="col-md-12">
 				<canvas id="circuit" width="900" height="450" style="border:solid 1px white;"></canvas>
 				<canvas id="preview" width="900" height="450" style="border:solid 1px white;"></canvas>
-				<canvas id="plotter" width="900" height="450" style="border:solid 1px white;"></canvas>
 				<svg id="preview" width="900" height="450" xmlns="http://www.w3c.org.200/svg" style="border:solid 1px white;">
 					<circle id="circle1" cx="25" cy="75" r="5" stroke="#00ff00" fill="#fff" stroke-width="2" style="opacity: 0.8;" />
 				</svg>
+				<canvas id="plotter" width="900" height="450" style="border:solid 1px white;"></canvas>
 			</div>
 		</div>
 	</div>
@@ -51,6 +51,25 @@
 	<script src="js/libs/rx.all-4.0.6.js"></script>
 
 	<script type="text/javascript">
+		function isPointOfInterest(context, x, y) {
+			var inpath, n, m;
+			inpath = context.isPointInStroke(x, y);
+
+			if (inpath != context.isPointInStroke(x - 1, y))
+				return true;
+			if (inpath != context.isPointInStroke(x + 1, y))
+				return true;
+
+			if (inpath != context.isPointInStroke(x, y - 1))
+				return true;
+
+			if (inpath != context.isPointInStroke(x, y + 1))
+				return true;
+				
+			return false;
+		}
+
+
 		var scale = 5;
 		var circuitWidth = 900 / scale, circuitHeight = 450 / scale;
 
@@ -82,7 +101,7 @@
 				context.clearRect(0, 0, canvas.width, canvas.height);
 				context.translate(0.0, 0.0);
 
-				context.lineWidth = 60 / scale;
+				context.lineWidth = 80 / scale;
 				context.strokeStyle = "#999";
 				context.beginPath();
 				context.moveTo(points[0].x, points[0].y);
@@ -94,7 +113,7 @@
 				context.lineJoin = 'round';
 				context.stroke();
 
-				context.lineWidth = 40 / scale;
+				context.lineWidth = 60 / scale;
 				context.strokeStyle = "#ccc";
 				context.beginPath();
 				context.moveTo(points[0].x, points[0].y);
@@ -133,19 +152,6 @@
 				context.clearRect(0, 0, canvas.width * scale, canvas.height * scale);
 				context.translate(0.0, 0.0);
 
-
-				// context.lineWidth = 40; // / scale;
-				// context.strokeStyle = "#999";
-				// context.beginPath();
-				// context.moveTo(points[0].x * scale, points[0].y * scale);
-				// var pointIndex;
-				// for (pointIndex = 0; pointIndex < points.length; pointIndex++) {
-				// 	context.lineTo(points[pointIndex].x * scale, points[pointIndex].y * scale);
-				// }
-				// context.closePath();
-				// context.lineJoin = 'round';
-				// context.stroke();
-
 				var ontrack = 0;
 				var plotter = [];
 				var radius = 1;
@@ -157,19 +163,22 @@
 						var fillColor = inpath ? '#00ff00' : '#cc0000';
 						ontrack += inpath ? 1 : 0;
 
-						if(inpath){
+						if (inpath) {
 							plotter[plotter.length] = x;
 							plotter[plotter.length] = y;
 						}
+						var isOfInterest = isPointOfInterest(previewCanvasContext, x, y);
+						if (isOfInterest) {
 
-						context.beginPath();
-						context.arc(x * scale, y * scale, radius, 0, 2 * Math.PI, false);
-						context.fillStyle = fillColor;
-						context.fill();
+							context.beginPath();
+							context.arc(x * scale, y * scale, radius, 0, 2 * Math.PI, false);
+							context.fillStyle = fillColor;
+							context.fill();
+						}
 					}
 				}
-console.log(ontrack);
-console.log(plotter);
+				console.log(ontrack);
+				console.log(plotter);
 
 			});
 
@@ -187,7 +196,7 @@ console.log(plotter);
 
 				$('#circle1').attr('cy', y);
 				$('#circle1').attr('cx', x);
-				
+
 				var inpath = previewCanvasContext.isPointInStroke(x, y);
 
 				$('#circle1').attr('stroke', inpath ? '#00ff00' : '#ff0000');
