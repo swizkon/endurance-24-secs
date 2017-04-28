@@ -41,8 +41,12 @@
 				<a class="btn btn-default btn-sm" href="#">
 					<i class="fa fa-refresh"></i> Reset</a>
 			</div>
+			<div class="col-md-6">
+				<h2>Debug</h2>
+				<div class="code">
+				</div>
+			</div>
 		</div>
-
 	</div>
 
 	<noscript>Scripting turned off...</noscript>
@@ -50,15 +54,18 @@
 	<script src="js/libs/jquery-2.1.4.js"></script>
 	<script src="js/libs/rx.all-4.0.6.js"></script>
 
-	<script type="text/javascript">
-		function isPointOfInterest(context, x, y) {
-			var inpath = context.isPointInStroke(x, y);
+	<script src="js/app/endurance.designer.js"></script>
 
-			return inpath != context.isPointInStroke(x - 1, y)
-				|| inpath != context.isPointInStroke(x + 1, y)
-				|| inpath != context.isPointInStroke(x, y - 1)
-				|| inpath != context.isPointInStroke(x, y + 1);
-		}
+	<script type="text/javascript">
+
+		// function isPointOfInterest(context, x, y) {
+		// 	var inpath = context.isPointInStroke(x, y);
+
+		// 	return inpath != context.isPointInStroke(x - 1, y)
+		// 		|| inpath != context.isPointInStroke(x + 1, y)
+		// 		|| inpath != context.isPointInStroke(x, y - 1)
+		// 		|| inpath != context.isPointInStroke(x, y + 1);
+		// }
 
 
 		var scale = 5;
@@ -158,7 +165,7 @@
 							plotter[plotter.length] = x;
 							plotter[plotter.length] = y;
 						}
-						var isOfInterest = isPointOfInterest(previewCanvasContext, x, y);
+						var isOfInterest = endurance.designer.isPointOfInterest(previewCanvasContext, x, y);
 						if (isOfInterest) {
 
 							context.beginPath();
