@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Endurance 24s</title>
     <link rel="stylesheet" href="css/bootstrap-slate.css" />
@@ -118,12 +117,6 @@
                             scale: 1
                         }
                     });
-                    // database.ref('accepted-order-' + $('#circuit-id').val()).on('value', function(d) {
-                    // 	console.log("Accepted: ");
-                    // 	console.log(d.val());
-                    // 	var chld = $('<div><b>' + d.val() + '</b> (click to accept)</div>').attr('data-circuitid', d.val().circuitid);
-                    // 	chld.prependTo('#accepted-orders');
-                    // });
                 },
                 function (err) {
                     console.log('Error: %s', err);

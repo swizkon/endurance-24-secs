@@ -36,14 +36,15 @@
 		<div class="row">
 			<div class="col-md-6">
 				<h2>Save</h2>
-				<a class="btn btn-primary" href="#">
+				<input type="text" id="circuitname" />
+				<a class="btn btn-primary" id="save-circuit" href="#">
 					<i class="fa fa-save fa-lg"></i> Save</a>
 				<a class="btn btn-default btn-sm" href="#">
 					<i class="fa fa-refresh"></i> Reset</a>
 			</div>
 			<div class="col-md-6">
 				<h2>Debug</h2>
-				<div class="code">
+				<div class="code" id="serialized">
 				</div>
 			</div>
 		</div>
@@ -57,19 +58,18 @@
 	<script src="js/app/endurance.designer.js"></script>
 
 	<script type="text/javascript">
-
-		// function isPointOfInterest(context, x, y) {
-		// 	var inpath = context.isPointInStroke(x, y);
-
-		// 	return inpath != context.isPointInStroke(x - 1, y)
-		// 		|| inpath != context.isPointInStroke(x + 1, y)
-		// 		|| inpath != context.isPointInStroke(x, y - 1)
-		// 		|| inpath != context.isPointInStroke(x, y + 1);
-		// }
-
-
 		var scale = 5;
 		var circuitWidth = 900 / scale, circuitHeight = 450 / scale;
+
+		var circuitModel = {
+			"name": "Default track",
+			"width": circuitWidth,
+			"height": circuitHeight,
+			"scale": scale,
+			"checkpoints": [],
+			"pointsOfInterest": {}
+		};
+
 
 		var points = [];
 
@@ -80,8 +80,45 @@
 		var previewCanvasContext = previewCanvas.getContext("2d");
 
 		var clickEvent$ = Rx.Observable.fromEvent($('canvas#circuit'), 'click');
+		var nameChange$ = Rx.Observable.fromEvent($('#circuitname'), 'keyup');
+
+		nameChange$.subscribe(function (e) {
+			circuitModel.name = e.target.value;
+			console.log(e);
+			$('#serialized').text(JSON.stringify(circuitModel));
+		});
 
 		$(document).ready(function () {
+
+
+			$('#save-circuit').click(function (e) {
+				console.log('MOdel' + circuitModel);
+				// $.ajax({
+				// 	type: "PUT",
+				// 	url: "https://uurrg18ywf.execute-api.eu-west-1.amazonaws.com/prod/circuits?key=Default-track.json",
+				// 	contentType: "application/json",
+				// 	data: JSON.stringify(circuitModel)
+				// });
+
+				$.ajax({
+					type: "PUT",
+					url: "http://localhost:4000/api/circuits/18",
+					contentType: "application/json",
+					data: JSON.stringify({
+						"circuit": {
+							"name": circuitModel.name,
+							"width": circuitModel.width,
+							"height": circuitModel.height,
+							"scale": circuitModel.scale,
+							"checkpoints": JSON.stringify(circuitModel.checkpoints),
+							"datamap": circuitModel
+						}
+					})
+				});
+
+				e.preventDefault();
+			});
+
 			// circuit
 			$('#circuit, #preview').attr('width', circuitWidth);
 			$('#circuit, #preview').attr('height', circuitHeight);
@@ -154,21 +191,33 @@
 				var pointsOfInterest = endurance.designer.pointsOfInterest(previewCanvas);
 
 				context.fillStyle = '#cc0000';
-				$.each(pointsOfInterest["off"], function(index, point){
-							context.beginPath();
-							context.arc(point.x * scale, point.y * scale, radius, 0, 2 * Math.PI, false);
-							context.fill();
+				$.each(pointsOfInterest["off"], function (index, point) {
+					context.beginPath();
+					context.arc(point.x * scale, point.y * scale, radius, 0, 2 * Math.PI, false);
+					context.fill();
 				});
 
 				context.fillStyle = '#00ff00';
-				$.each(pointsOfInterest["on"], function(index, point){
-							context.beginPath();
-							context.arc(point.x * scale, point.y * scale, radius, 0, 2 * Math.PI, false);
-							context.fill();
+				$.each(pointsOfInterest["on"], function (index, point) {
+					context.beginPath();
+					context.arc(point.x * scale, point.y * scale, radius, 0, 2 * Math.PI, false);
+					context.fill();
 				});
-				
-				console.log(pointsOfInterest);
-				console.log(points);
+
+				circuitModel.checkpoints = points.map(function (p) {
+					return [p.x, p.y]
+				});
+				/*
+				circuitModel.pointsOfInterest["ontrack"] = pointsOfInterest["on"].map(function (p) {
+					return [p.x, p.y]
+				});
+				circuitModel.pointsOfInterest["offtrack"] = pointsOfInterest["off"].map(function (p) {
+					return [p.x, p.y]
+				});
+					*/
+				circuitModel.heat = pointsOfInterest["heat"];
+
+				$('#serialized').text(JSON.stringify(circuitModel));
 			});
 
 
