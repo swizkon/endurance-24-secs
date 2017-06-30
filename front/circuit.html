@@ -25,6 +25,7 @@
 				<svg id="preview" width="900" height="450" xmlns="http://www.w3c.org.200/svg" style="border:solid 1px white;">
 					<circle id="circle1" cx="25" cy="75" r="5" stroke="#00ff00" fill="#fff" stroke-width="2" style="opacity: 0.8;" />
 				</svg>
+				<div id="hits" width="900" height="450" style="border:solid 1px white;"></div>
 				<canvas id="plotter" width="900" height="450" style="border:solid 1px white;"></canvas>
 			</div>
 		</div>
@@ -93,12 +94,6 @@
 
 			$('#save-circuit').click(function (e) {
 				console.log('MOdel' + circuitModel);
-				// $.ajax({
-				// 	type: "PUT",
-				// 	url: "https://uurrg18ywf.execute-api.eu-west-1.amazonaws.com/prod/circuits?key=Default-track.json",
-				// 	contentType: "application/json",
-				// 	data: JSON.stringify(circuitModel)
-				// });
 
 				$.ajax({
 					type: "PUT",
@@ -111,9 +106,18 @@
 							"height": circuitModel.height,
 							"scale": circuitModel.scale,
 							"checkpoints": JSON.stringify(circuitModel.checkpoints),
-							"datamap": circuitModel
+							"datamap": {
+								"checkpoints": circuitModel.checkpoints,
+								"dimensions": {
+									"width": circuitModel.width,
+									"height": circuitModel.height,
+									"scale": circuitModel.scale
+								},
+								"heat": circuitModel.heat
+							}
 						}
-					})
+					}
+					)
 				});
 
 				e.preventDefault();
@@ -234,6 +238,16 @@
 
 				$('#circle1').attr('stroke', inpath ? '#00ff00' : '#ff0000');
 			});
+
+			Rx.Observable.fromEvent($('canvas#preview'), 'click').subscribe(function (e) {
+
+				var x = e.offsetX, y = e.offsetY;
+				$.get("//localhost:4000/api/circuits/18/tileinfo?x=" + x + "&y=" + y,function(d){
+					$("#hits").text(d);
+				}
+				);
+			});
+
 		});
 	</script>
 </body>

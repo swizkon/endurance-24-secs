@@ -21,19 +21,21 @@ endurance.designer = {
 
                 var type = inpath ? "on" : "off";
 
-                var isOfInterest = endurance.designer.isPointOfInterest(previewCanvasContext, x, y);
+                var isOfInterest = endurance.designer.isPointOfInterest(context, x, y);
                 if (isOfInterest) {
                     pointsOfInterest[type][pointsOfInterest[type].length] = {
                         'x': x,
                         'y': y
                     };
-                    var h = pointsOfInterest["heat"][y] || {};
-                    h[x] = type == "on" ? 1 : 0;
-                    pointsOfInterest["heat"][y] = h;
-                }
+                    var h = pointsOfInterest["heat"][y.toString()] || {};
+                    h[x.toString()] = type == "on" ? 1 : 0;
+                    pointsOfInterest["heat"][y.toString()] = h;
+                }   
             }
         }
+
+        // Delete every heat
+
         return pointsOfInterest;
     }
-
 };
